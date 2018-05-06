@@ -40,10 +40,12 @@ try:
     # for python3
     from urllib.parse import urlencode
     from urllib.parse import urlparse
+    from urllib.parse import parse_qs
 except ImportError:
     # for python2
     from urllib import urlencode
-    import urlparse
+    from urlparse import urlparse
+    from urlparse import parse_qs
 
 logger = logging.getLogger(__name__)
 
@@ -90,13 +92,13 @@ class RESTResponse(io.IOBase):
 
     def getbatch_token(self):
         link_header = self.getheader('Link')
-        if link_header != None:
+        if link_header:
             match = re.match("^<([^>]+)>;rel='next'$", link_header)
-            if match != None:
+            if match:
                 next_url = match.group(1)
-                parsed_url = urlparse.urlparse(next_url)
-                parameters = urlparse.parse_qs(parsed_url.query)
-                if parameters.has_key('batch_token'):
+                parsed_url = urlparse(next_url)
+                parameters = parse_qs(parsed_url.query)
+                if 'batch_token' in parameters:
                     return parameters['batch_token'][0]
         return None
 
