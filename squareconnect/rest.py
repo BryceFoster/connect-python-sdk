@@ -65,7 +65,7 @@ class RESTResponse(io.IOBase):
                 # In the python 3, the response.data is bytes.
                 # we need to decode it to string.
                 if sys.version_info > (3,):
-                    self.data += chunk.decode('utf8')
+                    self.data += chunk.decode('utf8', 'ignore')
                 else:
                     self.data += str(chunk)
             # as using preload_content=False, we should call release_conn()
